@@ -97,7 +97,13 @@ class Deck:
     print('\nFront: %s' %(key))
     print('Hours since last test: %.2f' %(self.getTimeSince(key)/3600))
     
-    recall = int(input('Enter level: '))
+    recall = input('Enter level: ')
+
+    if recall == 's':
+      print("Skipped.")
+      return
+    else:
+      recall = int(recall)
 
     newMeta = {}
 

@@ -75,10 +75,16 @@ def test(filename):
   testList = d.getTestList()
   print(testList)
 
+  print('How many items to practice?')
+  cardLimit = int(input())
+  count = 0
   for item in testList:
     d.test(item)
+    count += 1
+    if count >= cardLimit:
+      break
 
-  d.save('myDeck.json')
+  d.save('myDeck2.json')
 
 def practice():
   # don't update the deck (training mode)
