@@ -79,13 +79,22 @@ class Deck:
 
   # ACCESSORS AND MUTATORS
   def intervalExceeded(self, key):
-    return self.getTimeSince(key) > self[key]['meta']['interval']
+    return self.getSecondsSinceTest(key) > self[key]['meta']['interval']
 
-  def getTimeSince(self, key):
+  def getSecondsSinceTest(self, key):
     curTime = time.time()
     cardBack = self[key]
     timeSince = curTime - cardBack['meta']['lastTested']
     return timeSince
+
+  def getSecondsUntilTest(self, key):
+    curTime = time.time()
+    cardBack = self[key]
+    timeSince = curTime - cardBack['meta']['lastTested']
+    return cardBack['meta']['interval'] - timeSince
+
+  def getLevel(self, key):
+    return self[key]['meta']['level']
 
   def setMeta(self, cardKey, meta):
     # meta is dicionary containing values to be modified
@@ -95,7 +104,7 @@ class Deck:
   # TESTING AN INDIVIDUAL CARD
   def test(self, key):
     print('\nFront: %s' %(key))
-    print('Hours since last test: %.2f' %(self.getTimeSince(key)/3600))
+    print('Hours since last test: %.2f' %(self.getSecondsSinceTest(key)/3600))
     
     recall = input('Enter level: ')
 
@@ -149,8 +158,10 @@ class Deck:
     else:
       cardsRemaining = cardLim
 
+    print(cardsRemaining)
+
     for key in self.cards:
-      if cardsRemaining < 0:
+      if cardsRemaining <= 0:
         break
       if tagList == [] or set(self.cards[key]['tags']) & tagSet:
         if self.intervalExceeded(key):
@@ -168,3 +179,17 @@ class Deck:
       print('Front: %s' %(key))
       if detailedFlag:
         print(c[key],'\n')
+
+  def getStatistics(self, tagList = None):
+    # create a list of the times remaining
+    timesRemaining = []
+    # create a list of the levels for the cards
+    levels = []
+    # iterate through all the cards in the deck
+    for key in self.cards:
+      hours = self.getSecondsUntilTest(key) / (60*60)
+      timesRemaining.append(hours)
+      levels.append(self.getLevel(key))
+
+    return (timesRemaining, levels)
+

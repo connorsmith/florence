@@ -1,6 +1,7 @@
 import deck
 import sys
 import card
+import pylab
 
 def batch_create():
   c1 = card.Card('Forging',{},['me548','mech'])
@@ -71,18 +72,18 @@ def test(filename):
   # print('\nPrinting the loaded deck...')
   # d.printDeck(detailedFlag = False)
 
-  print('\nPrinting the test list...')
-  testList = d.getTestList()
+  print('Items to practice: ',end='')
+  cardLimit = input()
+  if cardLimit == '':
+    # no limit used
+    testList = d.getTestList()
+  else:
+    # assume the user provided a proper integer input
+    testList = d.getTestList(int(cardLimit))
   print(testList)
 
-  print('How many items to practice?')
-  cardLimit = int(input())
-  count = 0
   for item in testList:
     d.test(item)
-    count += 1
-    if count >= cardLimit:
-      break
 
   d.save('myDeck2.json')
 
@@ -90,15 +91,34 @@ def practice():
   # don't update the deck (training mode)
   pass
 
+def analyze(filename):
+  d = deck.Deck(filename)
+
+  timesRemaining, levels = d.getStatistics()
+  print(timesRemaining)
+  pylab.hist(timesRemaining, 50, histtype='stepfilled')
+  pylab.title('Testing Histogram')
+  pylab.xlabel('Time Remaining')
+  pylab.ylabel('Occurrences')
+
+  pylab.figure()
+  pylab.hist(levels, 50, histtype='stepfilled')
+  pylab.title('Level Histogram')
+  pylab.xlabel('Levels')
+  pylab.ylabel('Occurrences')
+  pylab.show()
+
 if __name__ == '__main__':
   if len(sys.argv) < 2:
-    print('Usage: p3 ./atlantis <operation>')
+    print('Usage: p3 ./florence <operation>')
   else:
     op = sys.argv[1]
     if op == 'test':
       test(sys.argv[2])
     elif op == 'practice':
       practice()
+    elif op == 'analyze':
+      analyze(sys.argv[2])
     elif op == 'batch':
       programming_batch()
     elif op == 'interactive':
