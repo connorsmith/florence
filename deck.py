@@ -110,7 +110,9 @@ class Deck:
 
     if recall == 's':
       print("Skipped.")
-      return
+      return False
+    elif recall == 'q':
+      return True
     else:
       recall = int(recall)
 
@@ -147,6 +149,7 @@ class Deck:
     newMeta['lastTested'] = time.time()
 
     self.setMeta(key, newMeta)
+    return False
 
   # CARD SET RETRIEVAL
   def getTestList(self,cardLim = None, tagList = []):

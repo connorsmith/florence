@@ -69,9 +69,6 @@ def interactive_add():
 def test(filename):
   d = deck.Deck(filename)
 
-  # print('\nPrinting the loaded deck...')
-  # d.printDeck(detailedFlag = False)
-
   print('Items to practice: ',end='')
   cardLimit = input()
   if cardLimit == '':
@@ -83,7 +80,10 @@ def test(filename):
   print(testList)
 
   for item in testList:
-    d.test(item)
+    qf = d.test(item)
+    if qf:
+      print('Aborting test session.')
+      break
 
   d.save('myDeck2.json')
 
@@ -123,5 +123,7 @@ if __name__ == '__main__':
       programming_batch()
     elif op == 'interactive':
       interactive_add()
+    elif op == 'usage' or op == 'help':
+      print('Options are: test, analyze')
     else:
       print('%s is not a valid operation.'%(op))
