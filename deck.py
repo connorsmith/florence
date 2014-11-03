@@ -8,11 +8,32 @@ class Deck:
   def __init__(self, filename = None):
     if filename:
       if filename == 'default':
-        self.cards = json.load(open('myDeck.json'))
+        loaded = json.load(open('myDeck.json'))
       else:
-        self.cards = json.load(open(filename))
+        loaded = json.load(open(filename))
+      self.cards = loaded['cards']
+      self.tags = loaded['tags']
     else:
       self.cards = {}
+      self.tags = {}
+
+  def getCards(self):
+    return self.cards
+
+  def getTags(self):
+    return self.tags
+
+  def convert(self):
+    # temporary function for converting decks into the new format
+    for cardFront in self.cards:
+      if self.cards[cardFront]['tags']:
+        for tag in self.cards[cardFront]['tags']:
+          if tag not in self.tags:
+            self.tags[tag] = [cardFront]
+          else:
+            self.tags[tag].append(cardFront)
+    savePack = {'cards': self.cards, 'tags': self.tags}
+    json.dump(savePack, fp = open('mewtwo.json','w'), indent = 4)
 
   # BASIC OPERATOR OVERLOADING
   def __contains__(self, key):
@@ -26,12 +47,19 @@ class Deck:
 
   # ADDING CARDS TO THE DECK
   def _addCard(self, front, back):
-    # helper function for dictionary insertion (front = key, back = value)
+    # helper function for deck insertion (front = key, back = value)
     curTime = time.time()
     if front not in self.cards:
       self.cards[front] = back
       metaDict = dict(added = curTime, lastTested = curTime, level = 0, interval = 0.0, efactor = 2.5)
       self.cards[front]['meta'] = metaDict
+
+      # remove the tags from the card and move them to the tag dictionary
+      for tag in self.cards[front].pop("tags", []):
+        if tag not in self.tags:
+          self.tags[tag] = [front]
+        else:
+          self.tags[tag].append(front)
     else:
       print('Card \'%s\' already in deck.'%(front))
 
@@ -47,8 +75,6 @@ class Deck:
     print('Front: ', end='') 
     front = input()
 
-    # not adding support for ref yet
-
     print('Tag List: ', end='')
     tagString = input()
     # split by commas and remove additional whitespace
@@ -57,14 +83,30 @@ class Deck:
     newCard = card.Card(front = front, tags = tagList)
 
     # should probably add a confirmation here
-    self.addCards([newCard])
+    print("Confirm Card: '%s' with tags: %s" %(front, tagList))
+    print('(y/n):',end = '')
+    ans = input()
+    if ans == 'y':
+      self.addCards([newCard])
 
   def __add__(self, other):
+    # needs testing
     # overloading for deck concatenation
-    for key in other:
+    for key in other.getCards:
       # iterate through the keys in the other dictionary
       print('Key: %s'%(key))
-      self._addCard(key, other[key])        
+      self._addCard(key, other[key]) 
+
+    otherTags = other.getTags()
+    for tag in otherTags:
+      # iterate through all the tags in the dictionary
+      for taggedCard in otherTags:
+        # iterate through all of the cards in each tag list
+        if tag not in self.tags:
+          self.tags[tag] = [cardFront]
+        else:
+          if taggedCard not in self.tags[tag]:
+            self.tags[tag].append(cardFront)
     return self
 
   def replace(self, replacement):
@@ -72,7 +114,8 @@ class Deck:
 
   # SAVING
   def save(self, filename = 'myDeck.json'):
-    json.dump(self.cards, fp = open(filename,'w'), indent = 4)
+    savePack = {'cards':self.getCards(), 'tags':self.getTags()}
+    json.dump(savePack, fp = open(filename,'w'), indent = 4)
 
   def export(self):
     pass
