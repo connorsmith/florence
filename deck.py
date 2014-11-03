@@ -17,8 +17,14 @@ class Deck:
       self.cards = {}
       self.tags = {}
 
-  def getCards(self):
-    return self.cards
+  def getCards(self, tag = None):
+    if tag:
+      filteredCards = {}
+      for card in self.tags[tag]:
+        filteredCards[card] = self.cards[card]
+      return filteredCards
+    else:
+      return self.cards
 
   def getTags(self):
     return self.tags
@@ -195,24 +201,27 @@ class Deck:
     return False
 
   # CARD SET RETRIEVAL
-  def getTestList(self,cardLim = None, tagList = []):
-    tagSet = set(tagList)
-    testList = []
+  def getTestList(self, cardLim = None, tag = None):
+    
+    # get all of the cards with the correct tag
+    taggedCards = self.getCards(tag)
+    testList = [] # to be returned
 
+    # figure out the upper limit on the cards to practice
     if not cardLim:
       cardsRemaining = sys.maxsize # very large value
     else:
       cardsRemaining = cardLim
 
-    print(cardsRemaining)
-
-    for key in self.cards:
+    # iterate through all of the cards in the taggedCards dictionary
+    for key in taggedCards:
       if cardsRemaining <= 0:
+        # card limit reached
         break
-      if tagList == [] or set(self.cards[key]['tags']) & tagSet:
-        if self.intervalExceeded(key):
-          testList.append(key)
-          cardsRemaining -= 1
+      if self.intervalExceeded(key):
+        # card is due to be tested
+        testList.append(key)
+        cardsRemaining -= 1
     return testList
 
   def getPracticeList(self):
@@ -226,13 +235,15 @@ class Deck:
       if detailedFlag:
         print(c[key],'\n')
 
-  def getStatistics(self, tagList = None):
-    # create a list of the times remaining
-    timesRemaining = []
-    # create a list of the levels for the cards
-    levels = []
-    # iterate through all the cards in the deck
-    for key in self.cards:
+  def getStatistics(self, tag = 'programming'):
+    timesRemaining = [] # create a list of the times remaining
+    levels = [] # create a list of the levels for the cards
+    
+    # get all of the cards with the correct tag
+    taggedCards = self.getCards(tag)
+
+    # iterate through the tagged cards
+    for key in taggedCards:
       hours = self.getSecondsUntilTest(key) / (60*60)
       timesRemaining.append(hours)
       levels.append(self.getLevel(key))

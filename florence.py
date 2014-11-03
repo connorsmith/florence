@@ -95,7 +95,7 @@ def analyze(filename):
   d = deck.Deck(filename)
 
   timesRemaining, levels = d.getStatistics()
-  print(timesRemaining)
+  # print(timesRemaining)
   pylab.hist(timesRemaining, 50, histtype='stepfilled')
   pylab.title('Testing Histogram')
   pylab.xlabel('Time Remaining')
