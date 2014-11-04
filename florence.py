@@ -1,7 +1,6 @@
 import deck
-import sys
 import card
-import pylab
+import matplotlib.pyplot as plt
 
 def batch_create():
   c1 = card.Card('Forging',{},['me548','mech'])
@@ -53,7 +52,7 @@ def interactive_create():
 
   d.save('myDeck.json')
 
-def interactive_add():
+def interactiveAdd():
   d = deck.Deck('default')
 
   print('\nPrinting the loaded deck...')
@@ -116,35 +115,35 @@ def analyze(filename):
   d = deck.Deck(filename)
 
   timesRemaining, levels = d.getStatistics()
-  # print(timesRemaining)
-  pylab.hist(timesRemaining, 50, histtype='stepfilled')
-  pylab.title('Testing Histogram')
-  pylab.xlabel('Time Remaining')
-  pylab.ylabel('Occurrences')
+  print(timesRemaining)
+  plt.hist(timesRemaining, 50, histtype='stepfilled')
+  plt.title('Testing Histogram')
+  plt.xlabel('Time Remaining')
+  plt.ylabel('Occurrences')
 
-  pylab.figure()
-  pylab.hist(levels, 50, histtype='stepfilled')
-  pylab.title('Level Histogram')
-  pylab.xlabel('Levels')
-  pylab.ylabel('Occurrences')
-  pylab.show()
+  plt.figure()
+  plt.hist(levels, 50, histtype='stepfilled')
+  plt.title('Level Histogram')
+  plt.xlabel('Levels')
+  plt.ylabel('Occurrences')
+  plt.show()
 
 if __name__ == '__main__':
-  if len(sys.argv) < 2:
-    print('Usage: p3 ./florence <operation>')
+  option_list = ['test','stats','interactive']
+  print('Options:')
+  for i, op in enumerate(option_list):
+    print('%s - %s'%(i+1,op))
+  print('> ',end='')
+  user_input = int(input()) - 1
+  print("'%s' selected.\n"%(option_list[int(user_input)-1]))
+  filename = 'mewtwo.json'
+
+  if option_list[user_input] == 'test':
+    test(filename)
+  elif option_list[user_input] == 'stats':
+    analyze(filename)
+  elif option_list[user_input] == 'interactive':
+    interactiveAdd(filename)
   else:
-    op = sys.argv[1]
-    if op == 'test':
-      test(sys.argv[2])
-    elif op == 'practice':
-      practice()
-    elif op == 'analyze':
-      analyze(sys.argv[2])
-    elif op == 'batch':
-      programming_batch()
-    elif op == 'interactive':
-      interactive_add()
-    elif op == 'usage' or op == 'help':
-      print('Options are: test, analyze')
-    else:
-      print('%s is not a valid operation.'%(op))
+    print('Invalid option selected.')
+
