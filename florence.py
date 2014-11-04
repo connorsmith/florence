@@ -69,6 +69,8 @@ def interactive_add():
 def test(filename):
   d = deck.Deck(filename)
 
+  print('Tag list: %s\n'%(d.getTagList()))
+
   print('Items to practice: ',end='')
   cardLimit = input()
   if cardLimit == '':

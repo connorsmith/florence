@@ -26,8 +26,14 @@ class Deck:
     else:
       return self.cards
 
+  def getCardList(self):
+    return self.cards.keys()
+
   def getTags(self):
     return self.tags
+
+  def getTagList(self):
+    return list(self.tags.keys())
 
   def convert(self):
     # temporary function for converting decks into the new format
@@ -208,7 +214,7 @@ class Deck:
     testList = [] # to be returned
 
     # figure out the upper limit on the cards to practice
-    if not cardLim:
+    if cardLim == None:
       cardsRemaining = sys.maxsize # very large value
     else:
       cardsRemaining = cardLim
@@ -235,7 +241,7 @@ class Deck:
       if detailedFlag:
         print(c[key],'\n')
 
-  def getStatistics(self, tag = 'programming'):
+  def getStatistics(self, tag = None):
     timesRemaining = [] # create a list of the times remaining
     levels = [] # create a list of the levels for the cards
     
