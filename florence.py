@@ -52,22 +52,26 @@ def interactive_create():
 
   d.save('myDeck.json')
 
-def interactiveAdd():
-  d = deck.Deck('default')
+def interactiveInsertion(filename):
+  d = deck.Deck(filename)
 
-  print('\nPrinting the loaded deck...')
-  d.printDeck(detailedFlag = False)
+  addFlag = True
 
-  d.interactiveAdd()
+  while addFlag:
+    d.interactiveAdd()
 
-  print('\nPrinting the modified deck...')
-  d.printDeck(detailedFlag = True)
+    print("Add another? ",end = '')
+    ans = input()
+    if ans != 'y':
+      addFlag = False
 
-  d.save()
+  d.save(filename)
 
-def getTag(tagList):
+def tagPrompt(tagList):
+  # prompt the user to select a tag from the list
+  
   if not tagList:
-    # deals with the empty case as well
+    # deals with the empty case
     return None
 
   print('Filter by tag? ',end = '')
@@ -87,7 +91,7 @@ def test(filename):
   d = deck.Deck(filename)
   t = d.getTagList()
 
-  tag_filter = getTag(t)
+  tag_filter = tagPrompt(t)
 
   print('Items to practice: ',end='')
   cardLimit = input()
@@ -105,7 +109,7 @@ def test(filename):
       print('Aborting test session.')
       break
 
-  d.save('myDeck.json')
+  d.save(filename)
 
 def practice():
   # don't update the deck (training mode)
@@ -115,27 +119,38 @@ def analyze(filename):
   d = deck.Deck(filename)
 
   timesRemaining, levels = d.getStatistics()
-  print(timesRemaining)
   plt.hist(timesRemaining, 50, histtype='stepfilled')
   plt.title('Testing Histogram')
   plt.xlabel('Time Remaining')
   plt.ylabel('Occurrences')
 
   plt.figure()
-  plt.hist(levels, 50, histtype='stepfilled')
-  plt.title('Level Histogram')
+  plt.hist(levels, histtype='stepfilled', cumulative='true')
+  plt.title('Level Cumulative Distribution')
   plt.xlabel('Levels')
   plt.ylabel('Occurrences')
   plt.show()
 
+def deckPrint(filename):
+  d = deck.Deck(filename)
+  t = d.getTagList()
+
+  tag_filter = tagPrompt(t)
+
+  if tag_filter:
+    t_dict = d.getTags()
+    print(t_dict[tag_filter])
+  else:
+    print(d.getCardList())
+
 if __name__ == '__main__':
-  option_list = ['test','stats','interactive']
+  option_list = ['test','stats','interactive','print']
   print('Options:')
   for i, op in enumerate(option_list):
     print('%s - %s'%(i+1,op))
   print('> ',end='')
   user_input = int(input()) - 1
-  print("'%s' selected.\n"%(option_list[int(user_input)-1]))
+  print("'%s' selected.\n"%(option_list[int(user_input)]))
   filename = 'mewtwo.json'
 
   if option_list[user_input] == 'test':
@@ -143,7 +158,9 @@ if __name__ == '__main__':
   elif option_list[user_input] == 'stats':
     analyze(filename)
   elif option_list[user_input] == 'interactive':
-    interactiveAdd(filename)
+    interactiveInsertion(filename)
+  elif option_list[user_input] == 'print':
+    deckPrint(filename)
   else:
     print('Invalid option selected.')
 

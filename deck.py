@@ -1,6 +1,6 @@
 import json 
 import time
-import sys
+from sys import maxsize
 import card
 
 class Deck:
@@ -8,7 +8,7 @@ class Deck:
   def __init__(self, filename = None):
     if filename:
       if filename == 'default':
-        loaded = json.load(open('myDeck.json'))
+        loaded = json.load(open('mewtwo.json'))
       else:
         loaded = json.load(open(filename))
       self.cards = loaded['cards']
@@ -27,8 +27,8 @@ class Deck:
       return self.cards
 
   def getCardList(self):
-    return self.cards.keys()
-
+    return list(self.cards.keys())
+    
   def getTags(self):
     return self.tags
 
@@ -96,10 +96,12 @@ class Deck:
 
     # should probably add a confirmation here
     print("Confirm Card: '%s' with tags: %s" %(front, tagList))
-    print('(y/n):',end = '')
+    print('(y/n): ',end = '')
     ans = input()
     if ans == 'y':
       self.addCards([newCard])
+    else:
+      print('Cancelled.')
 
   def __add__(self, other):
     # needs testing
@@ -125,7 +127,7 @@ class Deck:
     pass
 
   # SAVING
-  def save(self, filename = 'myDeck.json'):
+  def save(self, filename = 'mewtwo.json'):
     savePack = {'cards':self.getCards(), 'tags':self.getTags()}
     json.dump(savePack, fp = open(filename,'w'), indent = 4)
 
@@ -215,7 +217,7 @@ class Deck:
 
     # figure out the upper limit on the cards to practice
     if cardLim == None:
-      cardsRemaining = sys.maxsize # very large value
+      cardsRemaining = maxsize # very large value
     else:
       cardsRemaining = cardLim
 
