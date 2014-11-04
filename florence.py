@@ -66,19 +66,38 @@ def interactive_add():
 
   d.save()
 
+def getTag(tagList):
+  if not tagList:
+    # deals with the empty case as well
+    return None
+
+  print('Filter by tag? ',end = '')
+  ans = input()
+
+  if ans == 'y':
+    for i, tag in enumerate(tagList):
+      print('%s - %s'%(i+1,tag))
+    print('Selection: ',end = '')
+    ans = input()
+    print("'%s' tag selected.\n"%(tagList[int(ans)-1]))
+    return tagList[int(ans)-1]
+  else:
+    return None
+
 def test(filename):
   d = deck.Deck(filename)
+  t = d.getTagList()
 
-  print('Tag list: %s\n'%(d.getTagList()))
+  tag_filter = getTag(t)
 
   print('Items to practice: ',end='')
   cardLimit = input()
   if cardLimit == '':
     # no limit used
-    testList = d.getTestList()
+    testList = d.getTestList(tag = tag_filter)
   else:
     # assume the user provided a proper integer input
-    testList = d.getTestList(int(cardLimit))
+    testList = d.getTestList(int(cardLimit),tag_filter)
   print(testList)
 
   for item in testList:
@@ -87,7 +106,7 @@ def test(filename):
       print('Aborting test session.')
       break
 
-  d.save('myDeck2.json')
+  d.save('myDeck.json')
 
 def practice():
   # don't update the deck (training mode)
