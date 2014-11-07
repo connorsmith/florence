@@ -3,6 +3,26 @@ import time
 from sys import maxsize
 import card
 
+def getResponse(restrictToInt = False):
+  while True:
+    try:
+      if restrictToInt:
+        print('Enter level: ',end='')
+      else:
+        print('Enter level or command: ',end='')
+      response = input()
+
+      if not restrictToInt and response in ['s','r','q']:
+        return response
+      else:
+        return int(response)
+
+    except ValueError:
+      if restrictToInt:
+        print("Valid inputs are integers in [0,5].")
+      else:
+        print("Valid inputs are 's','r','q', or [0,5].")
+
 class Deck:
   # CONSTRUCTOR
   def __init__(self, filename = None):
@@ -28,7 +48,7 @@ class Deck:
 
   def getCardList(self):
     return list(self.cards.keys())
-    
+
   def getTags(self):
     return self.tags
 
@@ -163,20 +183,22 @@ class Deck:
     print('\nFront: %s' %(key))
     print('Hours since last test: %.2f' %(self.getSecondsSinceTest(key)/3600))
     
-    recall = input('Enter level: ')
+    response = getResponse(restrictToInt = False)
 
-    if recall == 's':
+    if response == 's':
       print("Skipped.")
       return False
-    elif recall == 'q':
+    elif response == 'q':
       return True
-    else:
-      recall = int(recall)
+    elif response == 'r':
+      # display reference information
+      print('Displaying reference information.')
+      response = getResponse(restrictToInt = True)
 
     newMeta = {}
 
     # concept level adjustment
-    if recall < 3:
+    if response < 3:
       # unsuccessful recall, reset to level 1
       newMeta['level'] = 1
     else:
@@ -185,7 +207,7 @@ class Deck:
 
     # easiness factor adjustment
     oldEF = self[key]['meta']['efactor']
-    newEF = oldEF - 0.8 + 0.28 * recall - 0.02 * recall ** 2
+    newEF = oldEF - 0.8 + 0.28 * response - 0.02 * response ** 2
     if newEF > 2.5:
       newEF = 2.5
     elif newEF < 1.3:

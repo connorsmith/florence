@@ -79,7 +79,7 @@ def tagPrompt(tagList):
 
   if ans == 'y':
     for i, tag in enumerate(tagList):
-      print('%s - %s'%(i+1,tag))
+      print('%s) %s'%(i+1,tag))
     print('Selection: ',end = '')
     ans = input()
     print("'%s' tag selected.\n"%(tagList[int(ans)-1]))
@@ -93,15 +93,16 @@ def test(filename):
 
   tag_filter = tagPrompt(t)
 
-  print('Items to practice: ',end='')
-  cardLimit = input()
+  cardLimit = ''
   if cardLimit == '':
     # no limit used
     testList = d.getTestList(tag = tag_filter)
   else:
     # assume the user provided a proper integer input
     testList = d.getTestList(int(cardLimit),tag_filter)
-  print(testList)
+  
+  if not testList:
+    print('No items require testing.')
 
   for item in testList:
     qf = d.test(item)
@@ -147,7 +148,7 @@ if __name__ == '__main__':
   option_list = ['test','stats','interactive','print']
   print('Options:')
   for i, op in enumerate(option_list):
-    print('%s - %s'%(i+1,op))
+    print('%s) %s'%(i+1,op))
   print('> ',end='')
   user_input = int(input()) - 1
   print("'%s' selected.\n"%(option_list[int(user_input)]))
