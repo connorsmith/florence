@@ -1,7 +1,9 @@
 import json 
 import time
-from sys import maxsize
 import card
+import webbrowser
+
+from sys import maxsize
 
 def getResponse(restrictToInt = False):
   while True:
@@ -12,7 +14,7 @@ def getResponse(restrictToInt = False):
         print('Enter level or command: ',end='')
       response = input()
 
-      if not restrictToInt and response in ['s','r','q']:
+      if not restrictToInt and response in ['s','r','q','d']:
         return response
       else:
         return int(response)
@@ -21,7 +23,7 @@ def getResponse(restrictToInt = False):
       if restrictToInt:
         print("Valid inputs are integers in [0,5].")
       else:
-        print("Valid inputs are 's','r','q', or [0,5].")
+        print("Valid inputs are 's','r','q','d', or [0,5].")
 
 class Deck:
   # CONSTRUCTOR
@@ -178,6 +180,31 @@ class Deck:
     for key in meta.keys():
       self.cards[cardKey]['meta'][key] = meta[key]
 
+  def showReference(self, key):
+    cardBack = self[key]
+    if not cardBack['ref']:
+      print('No reference information to display.')
+    else:
+      print("We've got something!")
+
+  def deleteCard(self, key):
+    # remove the card from the card list
+    del self.cards[key]
+
+    # remove the card from the tag lists
+    tagDeletionList = [] # supports the removal of tags
+    for tagList in self.tags:
+      if key in self.tags[tagList]:
+        self.tags[tagList].remove(key)
+        if self.tags[tagList] == []:
+          tagDeletionList.append(tagList)
+
+    # remove the tags that no longer have any associated cards
+    for tagToRemove in tagDeletionList:
+      del self.tags[tagToRemove]
+
+    print('Card successfully deleted.')
+
   # TESTING AN INDIVIDUAL CARD
   def test(self, key):
     print('\nFront: %s' %(key))
@@ -188,11 +215,14 @@ class Deck:
     if response == 's':
       print("Skipped.")
       return False
+    elif response == 'd':
+      self.deleteCard(key)
+      return False
     elif response == 'q':
       return True
     elif response == 'r':
       # display reference information
-      print('Displaying reference information.')
+      self.showReference(key)
       response = getResponse(restrictToInt = True)
 
     newMeta = {}

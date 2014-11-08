@@ -107,7 +107,7 @@ def test(filename):
   for item in testList:
     qf = d.test(item)
     if qf:
-      print('Aborting test session.')
+      print('Ending test session.')
       break
 
   d.save(filename)
