@@ -192,7 +192,12 @@ class Deck:
     if not cardBack['ref']:
       print('No reference information to display.')
     else:
-      print("We've got something!")
+      if 'url' in cardBack['ref']:
+        webbrowser.open_new_tab(cardBack['ref']['url'])
+      elif 'png' in cardBack['ref']:
+        print('.png file found.')
+      else:
+        print(cardBack['ref']['ref'])
 
   def deleteCard(self, key):
     # remove the card from the card list
