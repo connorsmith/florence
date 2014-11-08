@@ -114,7 +114,14 @@ class Deck:
     # split by commas and remove additional whitespace
     tagList = [x.strip() for x in tagString.split(',')]
 
-    newCard = card.Card(front = front, tags = tagList)
+    print('Ref Field: ', end='')
+    refString = input()
+    if refString:
+      refDict = {'ref':refString}
+    else:
+      # empty by default
+      refDict = {}
+    newCard = card.Card(front = front, tags = tagList, ref = refDict)
 
     # should probably add a confirmation here
     print("Confirm Card: '%s' with tags: %s" %(front, tagList))
@@ -189,6 +196,13 @@ class Deck:
 
   def deleteCard(self, key):
     # remove the card from the card list
+    print("Enter 'y' to confirm deletion: ",end = '')
+    confirmationString = input()
+
+    if confirmationString != 'y':
+      print('Delete cancelled.')
+      return
+
     del self.cards[key]
 
     # remove the card from the tag lists
