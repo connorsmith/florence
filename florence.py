@@ -1,6 +1,7 @@
 import deck
 import card
 import matplotlib.pyplot as plt
+import pprint
 
 def batch_create():
   c1 = card.Card('Forging',{},['me548','mech'])
@@ -78,6 +79,7 @@ def tagPrompt(tagList):
   ans = input()
 
   if ans == 'y':
+    tagList.sort() # alphabetically
     for i, tag in enumerate(tagList):
       print('%s) %s'%(i+1,tag))
     print('Selection: ',end = '')
@@ -103,6 +105,7 @@ def test(filename):
   
   if not testList:
     print('No items require testing.')
+    return # no saving required
 
   for item in testList:
     qf = d.test(item)
@@ -140,9 +143,9 @@ def deckPrint(filename):
 
   if tag_filter:
     t_dict = d.getTags()
-    print(t_dict[tag_filter])
+    pprint.pprint(t_dict[tag_filter])
   else:
-    print(d.getCardList())
+    pprint.pprint(d.getCardList())
 
 if __name__ == '__main__':
   option_list = ['test','stats','interactive','print']
