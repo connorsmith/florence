@@ -123,14 +123,21 @@ def analyze(filename):
   d = deck.Deck(filename)
 
   timesRemaining, levels = d.getStatistics()
+
   plt.hist(timesRemaining, 50, histtype='stepfilled')
   plt.title('Testing Histogram')
   plt.xlabel('Time Remaining')
   plt.ylabel('Occurrences')
 
   plt.figure()
-  plt.hist(levels, histtype='stepfilled', cumulative='true')
-  plt.title('Level Cumulative Distribution')
+  levIndicesLeft = []
+  levValues = []
+  width = 0.6
+  for lev in levels:
+    levIndicesLeft.append(lev-(width/2))
+    levValues.append(levels[lev])
+  plt.bar(levIndicesLeft,levValues, width = width)
+  plt.title('Level Distribution')
   plt.xlabel('Levels')
   plt.ylabel('Occurrences')
   plt.show()

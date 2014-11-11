@@ -316,7 +316,7 @@ class Deck:
 
   def getStatistics(self, tag = None):
     timesRemaining = [] # create a list of the times remaining
-    levels = [] # create a list of the levels for the cards
+    levels = {} # create a dictionary of the levels for the cards
     
     # get all of the cards with the correct tag
     taggedCards = self.getCards(tag)
@@ -325,7 +325,11 @@ class Deck:
     for key in taggedCards:
       hours = self.getSecondsUntilTest(key) / (60*60)
       timesRemaining.append(hours)
-      levels.append(self.getLevel(key))
+      keyLevel = self.getLevel(key)
+      if keyLevel in levels: 
+        levels[keyLevel] += 1
+      else:
+        levels[keyLevel] = 1
 
     return (timesRemaining, levels)
 
