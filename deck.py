@@ -192,12 +192,14 @@ class Deck:
     if not cardBack['ref']:
       print('No reference information to display.')
     else:
-      if 'url' in cardBack['ref']:
+      if 'ref' in cardBack['ref']:
+        print(cardBack['ref']['ref'])
+      elif 'url' in cardBack['ref']:
         webbrowser.open_new_tab(cardBack['ref']['url'])
       elif 'png' in cardBack['ref']:
         print('.png file found.')
       else:
-        print(cardBack['ref']['ref'])
+        print('Unknown ref format(s): %s'%(list(cardBack['ref'].keys())))
 
   def deleteCard(self, key):
     # remove the card from the card list
@@ -227,7 +229,7 @@ class Deck:
   # TESTING AN INDIVIDUAL CARD
   def test(self, key):
     print('\nFront: %s' %(key))
-    print('Hours since last test: %.2f' %(self.getSecondsSinceTest(key)/3600))
+    print('Hours past due: %.2f' %(self.getSecondsUntilTest(key)/(-3600)))
     
     response = getResponse(restrictToInt = False)
 
@@ -284,7 +286,7 @@ class Deck:
     
     # get all of the cards with the correct tag
     taggedCards = self.getCards(tag)
-    testList = [] # to be returned
+    testDict = {} # holds the cards and the time past the test point
 
     # figure out the upper limit on the cards to practice
     if cardLim == None:
@@ -297,11 +299,15 @@ class Deck:
       if cardsRemaining <= 0:
         # card limit reached
         break
-      if self.intervalExceeded(key):
-        # card is due to be tested
-        testList.append(key)
+      # get the time relative to the testing point
+      timeToInterval = self.getSecondsUntilTest(key)
+      if timeToInterval < 0:
+        # card is due to be tested (past the testing point)
+        testDict[key] = timeToInterval
         cardsRemaining -= 1
-    return testList
+
+    # return a list of keys sorted by how far past their test points they are
+    return sorted(testDict,key=testDict.__getitem__)
 
   def getPracticeList(self):
     pass
