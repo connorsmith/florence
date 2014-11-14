@@ -117,7 +117,13 @@ class Deck:
     print('Ref Field: ', end='')
     refString = input()
     if refString:
-      refDict = {'ref':refString}
+      # answer was provided, ask if it was a url or a ref
+      print("Press Enter if 'url', or 'r' for 'ref': ",end='')
+      refType = input()
+      if refType:
+        refDict = {'ref':refString}
+      else:
+        refDict = {'url':refString}
     else:
       # empty by default
       refDict = {}
@@ -308,9 +314,6 @@ class Deck:
 
     # return a list of keys sorted by how far past their test points they are
     return sorted(testDict,key=testDict.__getitem__)
-
-  def getPracticeList(self):
-    pass
 
   # DECK ANALYTICS
   def printDeck(self, detailedFlag = False):
