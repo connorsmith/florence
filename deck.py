@@ -2,6 +2,7 @@ import json
 import time
 import card
 import webbrowser
+from random import randint
 
 from sys import maxsize
 
@@ -276,10 +277,11 @@ class Deck:
     if self[key]['meta']['level'] > 2:
       newInterval = oldInterval * newEF
     elif self[key]['meta']['level'] == 2:
-      newInterval = 6 * 24 * 60 * 60 # six days seconds
+      newInterval = 6 * 24 * 60 * 60 # six days in seconds
     else:
       newInterval = 24 * 60 * 60 # one day in seconds
-    newMeta['interval'] = newInterval
+    intervalRandomness = randint(-600,600) # +/- 10 minutes
+    newMeta['interval'] = newInterval + intervalRandomness
 
     # updating the lastTested field
     newMeta['lastTested'] = time.time()
