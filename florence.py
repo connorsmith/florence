@@ -130,13 +130,28 @@ def analyze(filename):
   plt.ylabel('Occurrences')
 
   plt.figure()
-  levIndicesLeft = []
-  levValues = []
-  width = 0.6
-  for lev in levels:
-    levIndicesLeft.append(lev-(width/2))
-    levValues.append(levels[lev])
-  plt.bar(levIndicesLeft,levValues, width = width)
+  width = 0.2
+
+  # indices and value lists for the cards past the testing point
+  needsTestingIdx = []
+  needsTestingVals = []
+  # indices and value lists for th cards which don't need testing yet
+  notYetIdx = []
+  notYetVals = []
+
+  # access the sub-dictionary for cards requiring testing
+  levelSection = levels['toBeTested']
+  for lev in levelSection:
+    needsTestingIdx.append(lev-width)
+    needsTestingVals.append(levelSection[lev])
+  # access the sub-dictionary for cards not requireing testing
+  levelSection = levels['notYet']
+  for lev in levels['notYet']:
+    notYetIdx.append(lev+width)
+    notYetVals.append(levelSection[lev])
+
+  p1 = plt.bar(needsTestingIdx,needsTestingVals, width = width, align='center',color='r',label='Active')
+  p2 = plt.bar(notYetIdx,notYetVals, width = width, align='center',color='b',label='Dormant')
   plt.title('Level Distribution')
   plt.xlabel('Levels')
   plt.ylabel('Occurrences')
