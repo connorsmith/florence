@@ -2,6 +2,8 @@ import deck
 import card
 import matplotlib.pyplot as plt
 import pprint
+import datetime
+import time 
 
 def batch_create():
   c1 = card.Card('Forging',{},['me548','mech'])
@@ -113,7 +115,15 @@ def test(filename):
       print('Ending test session.')
       break
 
+  # overwrite the working copy
   d.save(filename)
+  # also save as a timestamped backup
+  timeVal = time.time()
+  timeStamp = datetime.datetime.fromtimestamp(timeVal).strftime('%Y%m%d')
+  fileParts = filename.split('.')
+  fileParts[0] += '-' + timeStamp
+  tsFilename = 'backups/'+fileParts[0]+'.'+fileParts[1]
+  d.save(tsFilename)
 
 def practice():
   # don't update the deck (training mode)
