@@ -16,9 +16,16 @@ def getResponse(restrictToInt = False):
       response = input()
 
       if not restrictToInt and response in ['s','r','q','d']:
+        # one of the valid character inputs was received
         return response
       else:
-        return int(response)
+        # a response that wasn't one of the valid char inputs was received
+        intResponse = int(response)
+        if intResponse >= 0 and intResponse <= 5:
+          # response was a valid integer [0,5]
+          return intResponse 
+        else:
+          raise ValueError
 
     except ValueError:
       if restrictToInt:
@@ -134,7 +141,7 @@ class Deck:
     print("Confirm Card: '%s' with tags: %s" %(front, tagList))
     print('(y/n): ',end = '')
     ans = input()
-    if ans == 'y':
+    if ans != 'n':
       self.addCards([newCard])
     else:
       print('Cancelled.')
