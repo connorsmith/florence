@@ -29,22 +29,6 @@ def batch_create():
 
   d.save()
 
-def programming_batch():
-  frontList = ['Travelling Salesman Problem','A* Search Algorithm','Djikstra\'s Shortest Path Algorithm', \
-  'Linked List','Cycle Checking for Linked Lists','Binary Search','Bubble Sort','Selection Sort',\
-  'Insertion Sort', 'Heapsort', 'Radix Sort','Mergesort','Quicksort','Fisher-Yates Shuffling']
-  tags = ['programming']
-
-  c = [card.Card(x,ref={},tags=tags) for x in frontList]
-  d = deck.Deck()
-  d.addCards(c)
-
-  print("Printing the programming deck...")
-  d.printDeck()
-
-  d.save('pDeck.json')
-
-
 def interactive_create():
   d = deck.Deck()
   d.interactiveAdd()

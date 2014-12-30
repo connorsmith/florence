@@ -10,9 +10,9 @@ def getResponse(restrictToInt = False):
   while True:
     try:
       if restrictToInt:
-        print('Enter level: ',end='')
+        print('Enter recall: ',end='')
       else:
-        print('Enter level or command: ',end='')
+        print('Enter recall or command: ',end='')
       response = input()
 
       if not restrictToInt and response in ['s','r','q','d']:
@@ -244,7 +244,7 @@ class Deck:
   def test(self, key):
     print('\nFront: %s' %(key))
     print('Hours past due: %.2f' %(self.getSecondsUntilTest(key)/(-3600)))
-    
+
     response = getResponse(restrictToInt = False)
 
     if response == 's':
@@ -269,6 +269,7 @@ class Deck:
     else:
       # successful recall, incremement the level
       newMeta['level'] = self[key]['meta']['level'] + 1
+    print('Level: %d -> %d' %(self[key]['meta']['level'],newMeta['level']))
 
     # easiness factor adjustment
     oldEF = self[key]['meta']['efactor']
