@@ -243,7 +243,16 @@ class Deck:
   # TESTING AN INDIVIDUAL CARD
   def test(self, key):
     print('\nFront: %s' %(key))
-    print('Hours past due: %.2f' %(self.getSecondsUntilTest(key)/(-3600)))
+    timeOver = -1*self.getSecondsUntilTest(key)
+    m, s = divmod(timeOver, 60)
+    h, m = divmod(m, 60)
+    d, h = divmod(h, 24)
+    if d == 0:
+      print('Time past due: %d hours' %(d, h))
+    if d == 1:
+      print('Time past due: %d day and %d hours' %(d, h))
+    else:
+      print('Time past due: %d days and %d hours' %(d, h))
 
     response = getResponse(restrictToInt = False)
 
