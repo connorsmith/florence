@@ -243,6 +243,7 @@ class Deck:
   # TESTING AN INDIVIDUAL CARD
   def test(self, key):
     print('\nFront: %s' %(key))
+
     timeOver = -1*self.getSecondsUntilTest(key)
     m, s = divmod(timeOver, 60)
     h, m = divmod(m, 60)
@@ -311,7 +312,8 @@ class Deck:
     
     # get all of the cards with the correct tag
     taggedCards = self.getCards(tag)
-    testDict = {} # holds the cards and the time past the test point
+    lowDict = {} # holds low level cards
+    highDict = {} # holds high level cards
 
     # figure out the upper limit on the cards to practice
     if cardLim == None:
@@ -326,13 +328,17 @@ class Deck:
         break
       # get the time relative to the testing point
       timeToInterval = self.getSecondsUntilTest(key)
+      cardLevel = self.getLevel(key)
       if timeToInterval < 0:
         # card is due to be tested (past the testing point)
-        testDict[key] = timeToInterval
+        if cardLevel <3:
+          lowDict[key] = timeToInterval
+        else:
+          highDict[key] = timeToInterval
         cardsRemaining -= 1
 
     # return a list of keys sorted by how far past their test points they are
-    return sorted(testDict,key=testDict.__getitem__)
+    return sorted(lowDict,key=lowDict.__getitem__)+sorted(highDict,key=highDict.__getitem__)
 
   # DECK ANALYTICS
   def printDeck(self, detailedFlag = False):

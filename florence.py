@@ -93,11 +93,13 @@ def test(filename):
     print('No items require testing.')
     return # no saving required
 
+  testedCount = 0
   for item in testList:
     qf = d.test(item)
     if qf:
-      print('Ending test session.')
+      print('Ending test session. %d items reviewed!'%(testedCount))
       break
+    testedCount += 1
 
   # overwrite the working copy
   d.save(filename)
